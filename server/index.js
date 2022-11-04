@@ -5,19 +5,21 @@ const port = process.env.PORT || 7777;
 const VideoRequestData = require('./data/video-requests.data');
 const UserData = require('./data/user.data');
 const cors = require('cors');
+const multer = require('multer');
 const mongoose = require('./models/mongo.config');
 
 if (!Object.keys(mongoose).length) return;
 
 app.use(cors());
-
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const upload = multer();
 
 app.get('/', (req, res) =>
   res.send('Welcome to semicolon academy APIs, use /video-request to get data')
 );
 
-app.post('/video-request', async (req, res, next) => {
+app.post('/video-request', upload.none(), async (req, res, next) => {
   const response = await VideoRequestData.createRequest(req.body);
   res.send(response);
   next();
